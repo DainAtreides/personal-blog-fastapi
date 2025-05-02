@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 DATABASE_URL = "sqlite+aiosqlite:///./test.db"
 
@@ -13,7 +13,6 @@ AsyncSessionLocal = sessionmaker(
 )
 
 
-@asynccontextmanager
-async def get_db():
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         yield session
