@@ -1,18 +1,29 @@
 from fastapi import APIRouter, Depends
-from schemas import PostCreate, PostRead
+from schemas import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-from crud import create_post, read_post
+from crud import create_post, read_post, read_posts, update_post
+from typing import List
 
 
 post_router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
 @post_router.post("/", response_model=PostRead)
-async def create_new_post(post: PostCreate, db: AsyncSession = Depends(get_db)):
+async def add_post(post: PostCreate, db: AsyncSession = Depends(get_db)):
     return await create_post(post, db)
 
 
 @post_router.get("/{post_id}", response_model=PostRead)
 async def get_post(post_id: int, db: AsyncSession = Depends(get_db)):
     return await read_post(post_id, db)
+
+
+@post_router.get("/", response_model=List[PostRead])
+async def get_posts(db: AsyncSession = Depends(get_db)):
+    return await read_posts(db)
+
+
+@post_router.patch("/{post_id}", response_model=PostRead)
+async def patch_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Depends(get_db)):
+    return await update_post(post_id, new_post, db)
