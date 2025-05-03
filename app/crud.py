@@ -15,20 +15,22 @@ async def create_post(post: PostCreate, db: AsyncSession = Depends(get_db)) -> P
     return PostRead.model_validate(new_post)
 
 
-async def read_post(post_id: int, db: AsyncSession = Depends(get_db)):
+async def read_post(post_id: int, db: AsyncSession = Depends(get_db)) -> PostRead:
     post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return PostRead.model_validate(post)
 
 
-async def read_posts(db: AsyncSession = Depends(get_db)) -> List[PostRead]:
-    result = await db.execute(select(Post))
+async def read_posts(limit: int, offset: int, db: AsyncSession = Depends(get_db)) -> List[PostRead]:
+    result = await db.execute(select(Post).offset(offset).limit(limit))
     posts = result.scalars().all()
+    if not posts:
+        raise HTTPException(status_code=404, detail="Posts not found")
     return [PostRead.model_validate(post) for post in posts]
 
 
-async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Depends(get_db)):
+async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Depends(get_db)) -> PostRead:
     post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -39,3 +41,13 @@ async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Dep
     await db.commit()
     await db.refresh(post)
     return PostRead.model_validate(post)
+
+
+async def delete_post(post_id: int, db: AsyncSession = Depends(get_db)) -> PostRead:
+    post = await db.get(Post, post_id)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    deleted_post = PostRead.model_validate(post)
+    await db.delete(post)
+    await db.commit()
+    return deleted_post

@@ -2,3 +2,4 @@ __pycache__
 venv
 structure.txt
 test.db
+test.py
