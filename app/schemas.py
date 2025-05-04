@@ -1,12 +1,10 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
 
 
 class PostBase(BaseModel):
     title: str
     content: str
-    created_at: datetime
 
 
 class PostCreate(PostBase):
@@ -22,10 +20,11 @@ class PostRead(PostBase):
     post_id: int
     user_id: int
     username: str
-    email: str
+    email: EmailStr
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class UserBase(BaseModel):
@@ -46,5 +45,6 @@ class UserUpdate(BaseModel):
 class UserRead(UserBase):
     user_id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

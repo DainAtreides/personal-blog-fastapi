@@ -2,14 +2,13 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from pydantic import EmailStr
 
 
 Base = declarative_base()
 
 
 class Post(Base):
-    __tablename__ = "posts"
+    __tablename__ = "post"
 
     post_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("user.user_id"), nullable=False)
@@ -21,11 +20,11 @@ class Post(Base):
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "user"
 
     user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, nullable=False)
-    email = Column(EmailStr, unique=True, index=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
 
     posts = relationship("Post", back_populates="user")

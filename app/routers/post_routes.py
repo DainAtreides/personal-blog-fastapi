@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from schemas import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-from crud import create_post, read_post, read_posts, update_post, delete_post
+from crud.crud_post import create_post, read_post, read_posts, update_post, delete_post
 from typing import List
 
 

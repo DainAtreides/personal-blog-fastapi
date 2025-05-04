@@ -8,7 +8,7 @@ from typing import List
 
 
 async def create_post(post: PostCreate, db: AsyncSession = Depends(get_db)) -> PostRead:
-    new_post = Post(title=post.title, content=post.content)
+    new_post = Post(**post.model_dump())
     db.add(new_post)
     await db.commit()
     await db.refresh(new_post)
