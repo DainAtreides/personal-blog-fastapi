@@ -9,9 +9,9 @@ from typing import List
 post_router = APIRouter(prefix="/posts", tags=["Posts"])
 
 
-@post_router.post("/", response_model=PostRead)
-async def add_post(post: PostCreate, db: AsyncSession = Depends(get_db)):
-    return await create_post(post, db)
+@post_router.post("/{user_id}", response_model=PostRead, status_code=201)
+async def add_post(user_id: int, post: PostCreate, db: AsyncSession = Depends(get_db)):
+    return await create_post(user_id, post, db)
 
 
 @post_router.get("/{post_id}", response_model=PostRead)
@@ -32,6 +32,6 @@ async def patch_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Depe
     return await update_post(post_id, new_post, db)
 
 
-@post_router.delete("/{post_id}", response_model=PostRead)
+@post_router.delete("/{post_id}", response_model=PostRead, status_code=200)
 async def remove_post(post_id: int, db: AsyncSession = Depends(get_db)):
     return await delete_post(post_id, db)

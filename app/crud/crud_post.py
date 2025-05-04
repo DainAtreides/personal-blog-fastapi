@@ -1,37 +1,53 @@
-from fastapi import Depends, HTTPException
-from database import get_db
+from fastapi import HTTPException
 from models import Post
 from schemas import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 from typing import List
 
 
-async def create_post(post: PostCreate, db: AsyncSession = Depends(get_db)) -> PostRead:
-    new_post = Post(**post.model_dump())
+async def create_post(user_id: int, post: PostCreate, db: AsyncSession) -> PostRead:
+    new_post = Post(user_id=user_id, title=post.title, content=post.content)
     db.add(new_post)
     await db.commit()
     await db.refresh(new_post)
-    return PostRead.model_validate(new_post)
+    result = await db.execute(
+        select(Post).options(selectinload(Post.user)).where(
+            Post.post_id == new_post.post_id)
+    )
+    post_with_user = result.scalar_one()
+    return PostRead.model_validate(post_with_user)
 
 
-async def read_post(post_id: int, db: AsyncSession = Depends(get_db)) -> PostRead:
-    post = await db.get(Post, post_id)
+async def read_post(post_id: int, db: AsyncSession) -> PostRead:
+    result = await db.execute(
+        select(Post).options(selectinload(Post.user)).where(
+            Post.post_id == post_id)
+    )
+    post = result.scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     return PostRead.model_validate(post)
 
 
-async def read_posts(limit: int, offset: int, db: AsyncSession = Depends(get_db)) -> List[PostRead]:
-    result = await db.execute(select(Post).offset(offset).limit(limit))
+async def read_posts(limit: int, offset: int, db: AsyncSession) -> List[PostRead]:
+    result = await db.execute(
+        select(Post)
+        .options(selectinload(Post.user))
+        .offset(offset)
+        .limit(limit)
+    )
     posts = result.scalars().all()
-    if not posts:
-        raise HTTPException(status_code=404, detail="Posts not found")
     return [PostRead.model_validate(post) for post in posts]
 
 
-async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Depends(get_db)) -> PostRead:
-    post = await db.get(Post, post_id)
+async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession) -> PostRead:
+    result = await db.execute(
+        select(Post).options(selectinload(Post.user)).where(
+            Post.post_id == post_id)
+    )
+    post = result.scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     if new_post.title is not None:
@@ -43,8 +59,12 @@ async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession = Dep
     return PostRead.model_validate(post)
 
 
-async def delete_post(post_id: int, db: AsyncSession = Depends(get_db)) -> PostRead:
-    post = await db.get(Post, post_id)
+async def delete_post(post_id: int, db: AsyncSession) -> PostRead:
+    result = await db.execute(
+        select(Post).options(selectinload(Post.user)).where(
+            Post.post_id == post_id)
+    )
+    post = result.scalar_one_or_none()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
     deleted_post = PostRead.model_validate(post)
