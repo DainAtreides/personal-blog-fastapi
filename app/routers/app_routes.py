@@ -29,3 +29,8 @@ async def update(request: Request):
 @router.get("/delete")
 async def delete(request: Request):
     return templates.TemplateResponse("delete_post.html", {"request": request})
+
+
+@router.get("/login")
+async def login(request: Request):
+    return templates.TemplateResponse("login_page.html", {"request": request})

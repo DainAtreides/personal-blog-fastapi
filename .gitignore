@@ -1,5 +1,8 @@
 __pycache__
+.pytest_cache
 venv
 structure.txt
 test.db
 test.py
+tests/
+pytest.ini
