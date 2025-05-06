@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
-from datetime import datetime
 
 
 class UserBase(BaseModel):
@@ -26,6 +25,11 @@ class UserRead(UserBase):
     }
 
 
+class UserAuth(BaseModel):
+    email: str
+    password: str
+
+
 class PostBase(BaseModel):
     title: str
     content: str
@@ -43,29 +47,6 @@ class PostUpdate(BaseModel):
 class PostRead(PostBase):
     post_id: int
     user: UserRead
-
-    model_config = {
-        "from_attributes": True
-    }
-
-
-class RefreshTokenBase(BaseModel):
-    user_agent: Optional[str] = None
-    ip_address: Optional[str] = None
-
-
-class RefreshTokenCreate(RefreshTokenBase):
-    token: str
-    expires_at: datetime
-    is_valid: bool = True
-
-
-class RefreshTokenRead(RefreshTokenBase):
-    token_id: int
-    user: UserRead
-    token: str
-    expires_at: datetime
-    is_valid: bool
 
     model_config = {
         "from_attributes": True
