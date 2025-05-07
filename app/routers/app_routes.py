@@ -1,9 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.ext.asyncio import AsyncSession
-from schemas import UserAuth
-from database import get_db
-from auth import authenticate_user
 
 router = APIRouter()
 
@@ -33,13 +29,3 @@ async def update(request: Request):
 @router.get("/delete")
 async def delete(request: Request):
     return templates.TemplateResponse("delete_post.html", {"request": request})
-
-
-@router.post("/login")
-async def login(user: UserAuth, db: AsyncSession = Depends(get_db)):
-    authenticated_user = await authenticate_user(user.email, user.password, db)
-    return {
-        "user_id": authenticated_user.user_id,
-        "username": authenticated_user.username,
-        "email": authenticated_user.email
-    }

@@ -1,5 +1,6 @@
 __pycache__
 .pytest_cache
+.env
 venv
 structure.txt
 test.db
