@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from sqlalchemy import select
 from typing import List
-from pydantic import EmailStr, ValidationError
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -42,16 +41,11 @@ async def update_user(user_id: int, updated_user: UserUpdate, db: AsyncSession) 
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    if updated_user.username is not None:
+    if updated_user.username:
         user.username = updated_user.username
-    if updated_user.email is not None:
-        try:
-            EmailStr.validate(updated_user.email)
-            user.email = updated_user.email
-        except ValidationError:
-            raise HTTPException(
-                status_code=422, detail="Invalid email address")
-    if updated_user.password is not None:
+    if updated_user.email:
+        user.email = updated_user.email
+    if updated_user.password:
         user.hashed_password = hash_password(updated_user.password)
     await db.commit()
     await db.refresh(user)

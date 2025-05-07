@@ -7,8 +7,19 @@ from sqlalchemy import select
 from typing import List
 
 
-async def create_post(user_id: int, post: PostCreate, db: AsyncSession) -> PostRead:
-    new_post = Post(user_id=user_id, title=post.title, content=post.content)
+async def get_post_by_id(post_id: int, db: AsyncSession) -> Post:
+    result = await db.execute(
+        select(Post).options(selectinload(Post.user)).where(
+            Post.post_id == post_id)
+    )
+    post = result.scalar_one_or_none()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
+async def create_post(post: PostCreate, db: AsyncSession) -> PostRead:
+    new_post = Post(title=post.title, content=post.content)
     db.add(new_post)
     await db.commit()
     await db.refresh(new_post)
@@ -21,13 +32,7 @@ async def create_post(user_id: int, post: PostCreate, db: AsyncSession) -> PostR
 
 
 async def read_post(post_id: int, db: AsyncSession) -> PostRead:
-    result = await db.execute(
-        select(Post).options(selectinload(Post.user)).where(
-            Post.post_id == post_id)
-    )
-    post = result.scalar_one_or_none()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+    post = await get_post_by_id(post_id, db)
     return PostRead.model_validate(post)
 
 
@@ -43,13 +48,7 @@ async def read_posts(limit: int, offset: int, db: AsyncSession) -> List[PostRead
 
 
 async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession) -> PostRead:
-    result = await db.execute(
-        select(Post).options(selectinload(Post.user)).where(
-            Post.post_id == post_id)
-    )
-    post = result.scalar_one_or_none()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+    post = await get_post_by_id(post_id, db)
     if new_post.title is not None:
         post.title = new_post.title
     if new_post.content is not None:
@@ -60,13 +59,7 @@ async def update_post(post_id: int, new_post: PostUpdate, db: AsyncSession) -> P
 
 
 async def delete_post(post_id: int, db: AsyncSession) -> PostRead:
-    result = await db.execute(
-        select(Post).options(selectinload(Post.user)).where(
-            Post.post_id == post_id)
-    )
-    post = result.scalar_one_or_none()
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
+    post = await get_post_by_id(post_id, db)
     deleted_post = PostRead.model_validate(post)
     await db.delete(post)
     await db.commit()

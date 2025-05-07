@@ -11,21 +11,21 @@ async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@router.get("/create")
+@router.get("/create-user")
 async def create(request: Request):
     return templates.TemplateResponse("create_post.html", {"request": request})
 
 
-@router.get("/read")
+@router.get("/read-post")
 async def read(request: Request):
     return templates.TemplateResponse("read_post.html", {"request": request})
 
 
-@router.get("/update")
+@router.get("/update-post")
 async def update(request: Request):
     return templates.TemplateResponse("update_post.html", {"request": request})
 
 
-@router.get("/delete")
+@router.get("/delete-post")
 async def delete(request: Request):
     return templates.TemplateResponse("delete_post.html", {"request": request})
