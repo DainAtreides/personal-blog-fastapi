@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <form method="POST" action="/users/me/edit-profile">
+        <label for="email">Email:</label><br>
+        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" class="form-control" id="password" name="password"><br>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

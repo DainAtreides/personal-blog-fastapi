@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 
@@ -15,12 +15,6 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
-
-    @field_validator('username', always=True)
-    def check_username_length(cls, v):
-        if v is not None and len(v) < 2:
-            raise ValueError('Username must be at least 2 characters long')
-        return v
 
 
 class UserRead(UserBase):

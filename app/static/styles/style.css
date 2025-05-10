@@ -1,0 +1,94 @@
+body {
+    background-color: black;
+    color: #FF9000;
+    font-size: 16px;
+    font-family: "Roboto";
+}
+
+form * {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+body a {
+    color: white;
+    text-decoration: none;
+}
+
+body,
+header,
+main,
+footer,
+.container,
+.navbar {
+    margin: 0;
+    padding: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    font-weight: bolder;
+    transition: background-color 0.3s ease
+}
+
+.btn-primary {
+    color: black;
+    background-color: #FF9000;
+}
+
+.btn-secondary {
+    color: white;
+    background-color: #252525;
+}
+
+.btn-primary:hover {
+    background-color: #ff9e1f;
+}
+
+.btn-secondary:hover {
+    background-color: #404040;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    list-style-type: none;
+}
+
+header {
+    background-color: #0E0E0E;
+}
+
+main {
+    min-height: 600px;
+    background-color: black;
+}
+
+.post-list {
+    width: 600px;
+    height: 800px;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #252525;
+    list-style-type: none;
+    border-radius: 10px;
+}

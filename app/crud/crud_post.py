@@ -18,14 +18,15 @@ async def get_post_by_id(post_id: int, db: AsyncSession) -> Post:
     return post
 
 
-async def create_post(post: PostCreate, db: AsyncSession) -> PostRead:
-    new_post = Post(title=post.title, content=post.content)
+async def create_post(post: PostCreate, user_id: int, db: AsyncSession) -> PostRead:
+    new_post = Post(title=post.title, content=post.content, user_id=user_id)
     db.add(new_post)
     await db.commit()
     await db.refresh(new_post)
     result = await db.execute(
         select(Post).options(selectinload(Post.user)).where(
-            Post.post_id == new_post.post_id)
+            Post.post_id == new_post.post_id
+        )
     )
     post_with_user = result.scalar_one()
     return PostRead.model_validate(post_with_user)
