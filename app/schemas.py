@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
+from datetime import datetime
 
 
 class UserBase(BaseModel):
@@ -46,6 +47,7 @@ class PostUpdate(BaseModel):
 
 class PostRead(PostBase):
     post_id: int
+    created_at: datetime
     user: UserRead
 
     model_config = {

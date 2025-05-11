@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, Request
+from fastapi import APIRouter, Depends, Query, Request, Form
+from starlette.status import HTTP_303_SEE_OTHER
+from fastapi.responses import RedirectResponse
 from schemas import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
@@ -10,13 +12,16 @@ post_router = APIRouter(prefix="/posts", tags=["Posts"])
 
 @post_router.post("/", response_model=PostRead, status_code=201)
 async def add_post(
-        post: PostCreate,
         request: Request,
+        title: str = Form(...),
+        content: str = Form(...),
         db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    return await create_post(post, user_id, db)
+        return RedirectResponse(url="/login", status_code=HTTP_303_SEE_OTHER)
+    post = PostCreate(title=title, content=content)
+    await create_post(post, user_id, db)
+    return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
 
 
 @post_router.get("/{post_id}", response_model=PostRead)

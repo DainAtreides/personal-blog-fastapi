@@ -41,6 +41,7 @@ async def read_posts(limit: int, offset: int, db: AsyncSession) -> List[PostRead
     result = await db.execute(
         select(Post)
         .options(selectinload(Post.user))
+        .order_by(Post.created_at.desc())
         .offset(offset)
         .limit(limit)
     )
