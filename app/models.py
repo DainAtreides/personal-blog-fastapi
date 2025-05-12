@@ -15,14 +15,16 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
 
-    posts = relationship("Post", back_populates="user")
+    posts = relationship("Post", back_populates="user",
+                         cascade="all, delete-orphan")
 
 
 class Post(Base):
     __tablename__ = "post"
 
     post_id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("user.user_id"), nullable=False)
+    user_id = Column(Integer, ForeignKey(
+        "user.user_id", ondelete="CASCADE"), nullable=False)
     title = Column(String, nullable=False)
     content = Column(Text, nullable=False)
     created_at = Column(DateTime, default=func.now())

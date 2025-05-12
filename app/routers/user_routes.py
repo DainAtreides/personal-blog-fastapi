@@ -51,13 +51,6 @@ async def get_users(
     return await read_users(limit, offset, db)
 
 
-@user_router.delete("/{user_id}", response_model=UserRead, status_code=200)
-async def remove_user(
-        user_id: int,
-        db: AsyncSession = Depends(get_db)):
-    return await delete_user(user_id, db)
-
-
 @user_router.get("/me/edit-profile", response_class=HTMLResponse)
 async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
@@ -71,6 +64,7 @@ async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
 
 @user_router.post("/me/edit-profile")
 async def update_profile(
+        username: str = Form(...),
         email: str = Form(...),
         password: str = Form(None),
         request: Request = None,
@@ -78,6 +72,21 @@ async def update_profile(
     user_id = request.session.get("user_id")
     if not user_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    user_update = UserUpdate(email=email, password=password)
-    updated_user = await update_user(user_id, user_update, db)
+    user_update = UserUpdate(username=username, email=email, password=password)
+    await update_user(user_id, user_update, db)
     return RedirectResponse(url="/", status_code=303)
+
+
+@user_router.get("/me/delete-confirm")
+async def confirm_delete_page(request: Request):
+    return templates.TemplateResponse("confirm_delete.html", {"request": request})
+
+
+@user_router.post("/me/edit-profile/delete", response_model=UserRead, status_code=200)
+async def delete_profile(request: Request, db: AsyncSession = Depends(get_db)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    await delete_user(user_id, db)
+    request.session.clear()
+    return RedirectResponse(url="/login", status_code=303)

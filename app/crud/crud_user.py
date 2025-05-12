@@ -53,7 +53,8 @@ async def update_user(user_id: int, updated_user: UserUpdate, db: AsyncSession) 
 
 
 async def delete_user(user_id: int, db: AsyncSession) -> UserRead:
-    user = await db.get(User, user_id)
+    result = await db.execute(select(User).where(User.user_id == user_id))
+    user = result.scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     deleted_user = UserRead.model_validate(user)
