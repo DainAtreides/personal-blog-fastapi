@@ -1,6 +1,9 @@
 __pycache__
 .pytest_cache
+.pyc
 .env
+*.sqlite3
+*.db-journal
 venv
 structure.txt
 test.db
@@ -8,3 +11,4 @@ test.py
 tests/
 pytest.ini
 test.txt
+create_admin.py

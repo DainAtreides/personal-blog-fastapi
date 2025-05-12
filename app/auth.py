@@ -1,4 +1,4 @@
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, Depends
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -25,3 +25,8 @@ async def get_current_user(request: Request, db: AsyncSession) -> User:
     if not user:
         raise HTTPException(status_code=401, detail="Invalid user")
     return user
+
+
+async def check_admin(user: User) -> None:
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Access denied")
