@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Error {{ status_code }}{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <form class="post-form">
+        <h2>Error {{ status_code }}</h2>
+
+        {% if detail == "Incorrect password" %}
+        <p>The password you entered is incorrect.</p>
+        {% elif detail == "User not found" %}
+        <p>We couldn't find an account with that email.</p>
+        {% elif detail == "Not authenticated" %}
+        <p>You must be logged in to access this page.</p>
+        {% elif detail == "Invalid user" %}
+        <p>Your session is invalid or expired.</p>
+        {% elif detail == "Access denied" %}
+        <p>You do not have permission to view this page.</p>
+        {% else %}
+        <p>{{ detail }}</p>
+        {% endif %}
+
+        <a href="/" class="btn btn-primary">Go Back</a>
+    </form>
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from models import User
 from schemas import UserCreate, UserRead, UserUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from database import get_db
 from crud.crud_user import create_user, read_user, read_users, update_user, delete_user
 from typing import List
@@ -35,6 +36,10 @@ async def register_user(
 
     user_data = UserCreate(username=username, email=email, password=password)
     await create_user(user_data, db)
+
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one()
+    request.session["user_id"] = user.user_id
     return RedirectResponse(url="/", status_code=303)
 
 

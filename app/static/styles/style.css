@@ -87,6 +87,18 @@ footer,
     height: 90vh;
 }
 
+
+.admin-panel {
+    padding: 30px;
+    width: 50vh;
+    background-color: #0E0E0E;
+    border-radius: 10px;
+}
+
+.admin-panel ul {
+    list-style-type: none;
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
