@@ -61,3 +61,9 @@ async def delete_user(user_id: int, db: AsyncSession) -> UserRead:
     await db.delete(user)
     await db.commit()
     return deleted_user
+
+
+async def read_non_admin_users(db: AsyncSession) -> List[UserRead]:
+    result = await db.execute(select(User).where(User.role != "admin"))
+    users = result.scalars().all()
+    return [UserRead.model_validate(user) for user in users]

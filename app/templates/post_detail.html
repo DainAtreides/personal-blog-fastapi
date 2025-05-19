@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <form method="GET" class="post-form">
+        <h2>{{ post.title }}</h2>
+        <p><strong>Author:</strong> {{ post.user.username }}</p>
+        <p><strong>Created:</strong> {{ post.created_at }}</p>
+        <div class="post-body">
+            {{ post.content | safe }}
+        </div>
+        <a href="/" class="btn btn-secondary">Back</a>
+        {% if user_id == post.user_id %}
+        <a href="/posts/{{ post.post_id }}/edit-post" class="btn btn-secondary">Edit</a>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

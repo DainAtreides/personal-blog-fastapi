@@ -21,22 +21,18 @@ async def register_page(request: Request):
 
 @user_router.post("/register")
 async def register_user(
-    request: Request,
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    confirm_password: str = Form(...),
-    db: AsyncSession = Depends(get_db)
-):
+        request: Request,
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...),
+        confirm_password: str = Form(...),
+        db: AsyncSession = Depends(get_db)):
     if password != confirm_password:
         return templates.TemplateResponse("register.html", {
             "request": request,
-            "error": "Passwords do not match"
-        })
-
+            "error": "Passwords do not match"})
     user_data = UserCreate(username=username, email=email, password=password)
     await create_user(user_data, db)
-
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one()
     request.session["user_id"] = user.user_id
