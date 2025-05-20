@@ -19,6 +19,7 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
 templates = Jinja2Templates("templates")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -29,9 +30,6 @@ app.include_router(post_router)
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
-
-
-templates = Jinja2Templates(directory="templates")
 
 
 @app.exception_handler(HTTPException)

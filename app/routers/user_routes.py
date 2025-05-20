@@ -52,7 +52,7 @@ async def get_users(
     return await read_users(limit, offset, db)
 
 
-@user_router.get("/me/edit-profile", response_class=HTMLResponse)
+@user_router.get("/me/show-profile", response_class=HTMLResponse)
 async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
@@ -65,10 +65,10 @@ async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
 
 @user_router.post("/me/edit-profile")
 async def update_profile(
+        request: Request,
         username: str = Form(...),
         email: str = Form(...),
         password: str = Form(None),
-        request: Request = None,
         db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
@@ -83,7 +83,7 @@ async def confirm_delete_page(request: Request):
     return templates.TemplateResponse("confirm_delete.html", {"request": request})
 
 
-@user_router.post("/me/edit-profile/delete", response_model=UserRead, status_code=200)
+@user_router.post("/me/edit-profile/delete", status_code=200)
 async def delete_profile(request: Request, db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:

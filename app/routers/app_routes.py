@@ -14,6 +14,6 @@ async def root(request: Request, db: AsyncSession = Depends(get_db)):
     return templates.TemplateResponse("home.html", {"request": request, "posts": posts})
 
 
-@router.get("/users/me/add_post")
-async def render_post_page(request: Request):
-    return templates.TemplateResponse("add_post.html", {"request": request})
+# @router.get("/users/me/add_post")
+# async def render_post_page(request: Request):
+#     return templates.TemplateResponse("posts/add_post.html", {"request": request})

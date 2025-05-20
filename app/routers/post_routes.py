@@ -14,7 +14,15 @@ post_router = APIRouter(prefix="/posts", tags=["Posts"])
 templates = Jinja2Templates(directory="templates")
 
 
-@post_router.post("/", response_model=PostRead, status_code=201)
+@post_router.get("/add-post")
+async def add_post_form(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=HTTP_303_SEE_OTHER)
+    return templates.TemplateResponse("posts/add_post.html", {"request": request})
+
+
+@post_router.post("/", status_code=201)
 async def add_post(
         request: Request,
         title: str = Form(...),
@@ -36,7 +44,7 @@ async def view_post(
     post = await get_post_by_id(post_id, db)
     user_id = request.session.get("user_id")
     return templates.TemplateResponse(
-        "post_detail.html",
+        "posts/post_detail.html",
         {"request": request, "post": post, "user_id": user_id})
 
 
@@ -50,13 +58,14 @@ async def edit_post_form(
     if post.user_id != user.user_id:
         raise HTTPException(
             status_code=403, detail="You do not have permission to edit this post")
-    return templates.TemplateResponse("edit_post.html", {"request": request, "post": post})
+    return templates.TemplateResponse("posts/edit_post.html", {"request": request, "post": post})
 
 
 @post_router.post("/{post_id}/edit-post")
 async def edit_post_submit(
         post_id: int,
         request: Request,
+        title: str = Form(...),
         content: str = Form(...),
         db: AsyncSession = Depends(get_db)):
     user: User = await get_current_user(request, db)
@@ -64,6 +73,6 @@ async def edit_post_submit(
     if post.user_id != user.user_id:
         raise HTTPException(
             status_code=403, detail="You do not have permission to edit this post")
-    post_update = PostUpdate(content=content)
+    post_update = PostUpdate(title=title, content=content)
     await update_post(post_id, post_update, db)
     return RedirectResponse(url=f"/posts/{post_id}", status_code=HTTP_303_SEE_OTHER)

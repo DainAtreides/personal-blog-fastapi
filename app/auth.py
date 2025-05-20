@@ -3,6 +3,7 @@ from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models import User
+from typing import Optional
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,7 +18,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
     return user
 
 
-async def get_current_user(request: Request, db: AsyncSession) -> User:
+async def get_current_user(request: Request, db: AsyncSession) -> Optional[User]:
     user_id = request.session.get("user_id")
     if not user_id:
         raise HTTPException(status_code=401, detail="Not authenticated")

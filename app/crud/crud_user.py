@@ -3,7 +3,7 @@ from models import User
 from schemas import UserCreate, UserRead, UserUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from sqlalchemy import select
+from sqlalchemy import select, or_, and_
 from typing import List
 
 
@@ -15,6 +15,15 @@ def hash_password(plain_password: str) -> str:
 
 
 async def create_user(user: UserCreate, db: AsyncSession) -> UserRead:
+    existing_user = await db.execute(
+        select(User).where(
+            or_(User.email == user.email, User.username == user.username)
+        )
+    )
+    if existing_user.scalars().first():
+        raise HTTPException(
+            status_code=400, detail="User with this email or username already exists")
+
     hashed_password = hash_password(user.password)
     new_user = User(username=user.username, email=user.email,
                     hashed_password=hashed_password)
@@ -41,12 +50,33 @@ async def update_user(user_id: int, updated_user: UserUpdate, db: AsyncSession) 
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    filters = []
+    if updated_user.email:
+        filters.append(User.email == updated_user.email)
+    if updated_user.username:
+        filters.append(User.username == updated_user.username)
+
+    if filters:
+        query = select(User).where(
+            and_(
+                or_(*filters),
+                User.user_id != user_id
+            )
+        )
+        existing_user = await db.execute(query)
+        if existing_user.scalars().first():
+            raise HTTPException(
+                status_code=400, detail="User with this email or username already exists"
+            )
+
     if updated_user.username:
         user.username = updated_user.username
     if updated_user.email:
         user.email = updated_user.email
     if updated_user.password:
         user.hashed_password = hash_password(updated_user.password)
+
     await db.commit()
     await db.refresh(user)
     return UserRead.model_validate(user)

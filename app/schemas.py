@@ -3,6 +3,12 @@ from typing import Optional
 from datetime import datetime
 
 
+class FromORMBase(BaseModel):
+    model_config = {
+        "from_attributes": True
+    }
+
+
 class UserBase(BaseModel):
     username: str
     email: EmailStr
@@ -19,12 +25,8 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
 
 
-class UserRead(UserBase):
+class UserRead(UserBase, FromORMBase):
     user_id: int
-
-    model_config = {
-        "from_attributes": True
-    }
 
 
 class UserAuth(BaseModel):
@@ -46,11 +48,7 @@ class PostUpdate(BaseModel):
     content: Optional[str] = None
 
 
-class PostRead(PostBase):
+class PostRead(PostBase, FromORMBase):
     post_id: int
     created_at: datetime
     user: UserRead
-
-    model_config = {
-        "from_attributes": True
-    }

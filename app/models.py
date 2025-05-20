@@ -28,6 +28,6 @@ class Post(Base):
         "user.user_id", ondelete="CASCADE"), nullable=False)
     title = Column(String, nullable=False)
     content = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, default=func.now(), nullable=False)
 
     user = relationship("User", back_populates="posts")

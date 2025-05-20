@@ -17,8 +17,8 @@
           <li><img src="/static/icons/header.png" width="64" height="64"></li>
           <li><a href="/" class="btn btn-primary">Home</a></li>
           {% if request.session.get("user_id") %}
-          <li><a href="/users/me/add_post">Add Post</a></li>
-          <li><a href="/users/me/edit-profile">Profile</a></li>
+          <li><a href="/posts/add-post">Add Post</a></li>
+          <li><a href="/users/me/show-profile">Profile</a></li>
           <li>
             <form action="/logout" method="POST">
               <button type="submit" class="btn btn-secondary">Sign Out</button>
