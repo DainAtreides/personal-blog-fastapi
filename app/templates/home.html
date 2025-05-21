@@ -10,7 +10,7 @@
             <li class="post-item">
                 <h2><a href="/posts/{{ post.post_id }}">{{ post.title }}</a> 
                     <small>
-                        by <a href="#">{{ post.user.username }}</a><br>
+                        by <a href="/users/{{ post.user.user_id }}/show-profile">{{ post.user.username }}</a><br>
                     </small>
                 </h2>
                 <p>{{ post.content[:200] }}</p>

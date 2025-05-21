@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from database import get_db
 from crud.crud_user import create_user, read_user, read_users, update_user, delete_user
+from crud.crud_post import read_posts
 from typing import List
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
@@ -39,11 +40,6 @@ async def register_user(
     return RedirectResponse(url="/", status_code=303)
 
 
-@user_router.get("/{user_id}", response_model=UserRead)
-async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    return await read_user(user_id, db)
-
-
 @user_router.get("/", response_model=List[UserRead])
 async def get_users(
         limit: int = Query(10, ge=1, le=100),
@@ -52,7 +48,16 @@ async def get_users(
     return await read_users(limit, offset, db)
 
 
-@user_router.get("/me/show-profile", response_class=HTMLResponse)
+@user_router.get("/{user_id}/show-profile", response_class=HTMLResponse)
+async def show_profile(user_id: int, request: Request, db: AsyncSession = Depends(get_db)):
+    user = await read_user(user_id, db)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    posts = await read_posts(user_id=user.user_id, limit=100, offset=0, db=db)
+    return templates.TemplateResponse("profile.html", {"request": request, "user": user, "posts": posts})
+
+
+@user_router.get("/me/edit-profile", response_class=HTMLResponse)
 async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
@@ -75,7 +80,7 @@ async def update_profile(
         raise HTTPException(status_code=401, detail="Not authenticated")
     user_update = UserUpdate(username=username, email=email, password=password)
     await update_user(user_id, user_update, db)
-    return RedirectResponse(url="/", status_code=303)
+    return RedirectResponse(url=f"/users/{user_id}/show-profile", status_code=303)
 
 
 @user_router.get("/me/delete-confirm")

@@ -11,7 +11,10 @@
         <div class="post-body">
             {{ post.content | safe }}
         </div>
-        <a href="/" class="btn btn-secondary">Back</a>
+        <a href="{% if request.query_params.get('from_profile') %}/users/{{ post.user.user_id }}/show-profile{% else %}/{% endif %}"
+            class="btn btn-secondary">
+            Back
+        </a>
         {% if user_id == post.user_id %}
         <a href="/posts/{{ post.post_id }}/edit-post" class="btn btn-secondary">Edit</a>
         {% endif %}

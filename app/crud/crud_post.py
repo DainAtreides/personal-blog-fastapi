@@ -4,7 +4,7 @@ from schemas import PostCreate, PostRead, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy import select
-from typing import List
+from typing import List, Optional
 
 
 async def get_post_by_id(post_id: int, db: AsyncSession) -> Post:
@@ -37,14 +37,19 @@ async def read_post(post_id: int, db: AsyncSession) -> PostRead:
     return PostRead.model_validate(post)
 
 
-async def read_posts(limit: int, offset: int, db: AsyncSession) -> List[PostRead]:
-    result = await db.execute(
-        select(Post)
-        .options(selectinload(Post.user))
-        .order_by(Post.created_at.desc())
-        .offset(offset)
-        .limit(limit)
-    )
+async def read_posts(
+    db: AsyncSession,
+    limit: int,
+    offset: int,
+    user_id: Optional[int] = None
+) -> List[PostRead]:
+    query = select(Post).options(selectinload(Post.user)).order_by(
+        Post.created_at.desc()).offset(offset).limit(limit)
+
+    if user_id is not None:
+        query = query.where(Post.user_id == user_id)
+
+    result = await db.execute(query)
     posts = result.scalars().all()
     return [PostRead.model_validate(post) for post in posts]
 

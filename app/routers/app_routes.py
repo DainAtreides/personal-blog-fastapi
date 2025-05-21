@@ -12,8 +12,3 @@ templates = Jinja2Templates(directory="templates")
 async def root(request: Request, db: AsyncSession = Depends(get_db)):
     posts = await read_posts(limit=100, offset=0, db=db)
     return templates.TemplateResponse("home.html", {"request": request, "posts": posts})
-
-
-# @router.get("/users/me/add_post")
-# async def render_post_page(request: Request):
-#     return templates.TemplateResponse("posts/add_post.html", {"request": request})

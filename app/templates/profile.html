@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="content-container">
+    <div class="profile-container">
+        <div class="profile-info">
+            <h2>Profile</h2>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Role:</strong> {{ user.role }}</p>
+
+            {% if request.session.get("user_id") == user.user_id %}
+            <a href="/users/me/edit-profile" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="/" class="btn btn-secondary">Back</a>
+        </div>
+        <div class="profile-posts">
+            <h2>User Posts</h2>
+            {% if posts %}
+            {% for post in posts %}
+            <div class="profile-post">
+                <h3><a href="/posts/{{ post.post_id }}?from_profile=true">{{ post.title }}</a></h3>
+                <p>{{ post.content[:150] }}{% if post.content|length > 150 %}...{% endif %}</p>
+                <small>at {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}</small>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No posts found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
