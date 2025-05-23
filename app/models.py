@@ -1,10 +1,16 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, Enum, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+import enum
 
 
 Base = declarative_base()
+
+
+class GenderEnum(str, enum.Enum):
+    male = "male"
+    female = "female"
 
 
 class User(Base):
@@ -15,6 +21,9 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String(255), nullable=False)
     role = Column(String, default="user")
+    avatar_url = Column(String, nullable=True,
+                        default="/static/avatars/default.png")
+    gender = Column(Enum(GenderEnum, name="gender_enum"), nullable=False)
 
     posts = relationship("Post", back_populates="user",
                          cascade="all, delete-orphan")

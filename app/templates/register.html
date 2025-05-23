@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Registration{% endblock %}
 
 {% block content %}
 <div class="content-container">
-    <form method="POST" action="/users/register">
+    <form method="POST" action="/users/register" enctype="multipart/form-data">
+        <label for="avatar">Avatar:</label>
+        <input type="file" id="avatar" name="avatar" accept="image/*"><br>
+
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username" required><br>
+
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender" required>
+            <option value="" disabled selected>Select your gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select><br>
 
         <label for="email">Email:</label><br>
         <input type="email" id="email" name="email" required><br>

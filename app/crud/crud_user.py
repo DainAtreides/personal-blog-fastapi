@@ -5,13 +5,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from sqlalchemy import select, or_, and_
 from typing import List
-
+import os
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(plain_password: str) -> str:
     return pwd_context.hash(plain_password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 
 async def create_user(user: UserCreate, db: AsyncSession) -> UserRead:
@@ -25,8 +29,12 @@ async def create_user(user: UserCreate, db: AsyncSession) -> UserRead:
             status_code=400, detail="User with this email or username already exists")
 
     hashed_password = hash_password(user.password)
-    new_user = User(username=user.username, email=user.email,
-                    hashed_password=hashed_password)
+    new_user = User(
+        username=user.username,
+        gender=user.gender,
+        avatar_url=user.avatar_url,
+        email=user.email,
+        hashed_password=hashed_password)
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
@@ -72,14 +80,36 @@ async def update_user(user_id: int, updated_user: UserUpdate, db: AsyncSession) 
 
     if updated_user.username:
         user.username = updated_user.username
+    if updated_user.gender:
+        user.gender = updated_user.gender
+    if updated_user.avatar_url:
+        if user.avatar_url and not user.avatar_url.endswith("default.png"):
+            try:
+                os.remove(user.avatar_url.lstrip("/"))
+            except Exception:
+                pass
+        user.avatar_url = updated_user.avatar_url
     if updated_user.email:
         user.email = updated_user.email
-    if updated_user.password:
-        user.hashed_password = hash_password(updated_user.password)
 
     await db.commit()
     await db.refresh(user)
     return UserRead.model_validate(user)
+
+
+async def update_password(user_id: int, current_password: str, new_password: str, confirm_password: str, db: AsyncSession) -> None:
+    if new_password != confirm_password:
+        raise HTTPException(
+            status_code=400, detail="New password and confirmation do not match")
+    user = await db.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if not verify_password(current_password, user.hashed_password):
+        raise HTTPException(
+            status_code=400, detail="Current password is incorrect")
+    user.hashed_password = hash_password(new_password)
+    await db.commit()
+    await db.refresh(user)
 
 
 async def delete_user(user_id: int, db: AsyncSession) -> UserRead:

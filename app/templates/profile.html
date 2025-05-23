@@ -7,7 +7,9 @@
     <div class="profile-container">
         <div class="profile-info">
             <h2>Profile</h2>
+            <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img">
             <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Gender:</strong> {{ user.gender.value }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Role:</strong> {{ user.role }}</p>
 

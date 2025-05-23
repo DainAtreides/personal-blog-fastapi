@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from starlette.status import HTTP_303_SEE_OTHER
 from fastapi.responses import RedirectResponse
-from schemas import PostCreate, PostRead, PostUpdate
+from schemas import PostCreate, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 from crud.crud_post import create_post, update_post, get_post_by_id

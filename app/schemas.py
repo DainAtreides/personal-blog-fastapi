@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
+from models import GenderEnum
 
 
 class FromORMBase(BaseModel):
@@ -13,6 +14,8 @@ class UserBase(BaseModel):
     username: str
     email: EmailStr
     role: Optional[str] = "user"
+    avatar_url: Optional[str] = None
+    gender: GenderEnum
 
 
 class UserCreate(UserBase):
@@ -23,6 +26,8 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[str] = None
+    avatar_url: Optional[str] = None
+    gender: Optional[GenderEnum] = None
 
 
 class UserRead(UserBase, FromORMBase):
