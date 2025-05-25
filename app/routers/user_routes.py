@@ -144,6 +144,9 @@ async def delete_profile(request: Request, db: AsyncSession = Depends(get_db)):
 
 @user_router.get("/me/change-password", response_class=HTMLResponse)
 async def change_password_page(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     return templates.TemplateResponse("change_password.html", {"request": request})
 
 
@@ -176,4 +179,6 @@ async def change_password(
 
     user.hashed_password = hash_password(new_password)
     await db.commit()
-    return RedirectResponse(url="/me/edit-profile", status_code=303)
+    return templates.TemplateResponse("change_password.html", {
+        "request": request,
+        "success": "Password updated successfully"})

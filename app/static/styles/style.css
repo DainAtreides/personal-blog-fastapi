@@ -146,11 +146,23 @@ main {
     border-radius: 10px;
 }
 
+.password-form {
+    padding: 30px;
+    width: fit-content;
+    background-color: #0E0E0E;
+    border-radius: 10px;
+}
+
 .post-form input,
 .post-form textarea {
     color: #ffffff;
     width: 100%;
     background-color: #404040;
+}
+
+.post-form input[type=file] {
+    color: transparent;
+    width: 130px;
 }
 
 .button-row {
