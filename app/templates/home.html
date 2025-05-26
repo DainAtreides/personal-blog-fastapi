@@ -13,7 +13,7 @@
                         by <a href="/users/{{ post.user.user_id }}/show-profile">{{ post.user.username }}</a><br>
                     </small>
                 </h2>
-                <p>{{ post.content[:200] }}</p>
+                <p class="post-body">{{ post.content[:200] }}</p>
                 <p>at {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
             </li>
         {% endfor %}

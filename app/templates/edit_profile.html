@@ -5,9 +5,17 @@
 {% block content %}
 <div class="content-container">
     <form method="POST" class="post-form" action="/users/me/edit-profile" enctype="multipart/form-data">
-        <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img"><br>
-        <input type="file" id="avatar_url" name="avatar_url" accept="image/*"><br>
-
+        <input type="checkbox" id="avatar-toggle" class="avatar-toggle" hidden>
+        <label for="avatar-toggle" class="avatar-label">
+            <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img">
+        </label>
+        <div class="avatar-modal">
+            <label for="avatar-toggle" class="avatar-modal-bg"></label>
+            <img src="{{ user.avatar_url }}" alt="Full Avatar" class="avatar-full-img">
+        </div>
+        <br>
+        <input type="file" id="avatar_url" name="avatar_url" accept="image/*" class="avatar-upload">
+        <br>
         <label for="username">Name:</label>
         <input type="text" id="username" name="username" value="{{ user.username }}" required><br>
 

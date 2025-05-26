@@ -17,12 +17,11 @@ async def login_page(request: Request):
 
 @auth_router.post("/login")
 async def login(
-    request: Request,
-    email: str = Form(...),
-    password: str = Form(...),
-    db: AsyncSession = Depends(get_db)
-):
-    authenticated_user = await authenticate_user(email, password, db)
+        request: Request,
+        identifier: str = Form(...),
+        password: str = Form(...),
+        db: AsyncSession = Depends(get_db)):
+    authenticated_user = await authenticate_user(identifier, password, db)
     request.session["user_id"] = authenticated_user.user_id
     return RedirectResponse(url="/", status_code=303)
 

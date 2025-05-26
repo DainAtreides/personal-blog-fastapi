@@ -4,12 +4,13 @@
 
 {% block content %}
 <div class="content-container">
-    <form method="POST" action="/login">
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
+    <form method="POST" action="/login" class="form-control">
+        <label for="login">Login:</label><br>
+        <input type="text" id="identifier" name="identifier" placeholder="Email or Username" required>
+        <br>
 
         <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="password" name="password" placeholder="Enter your password here" required><br>
         
         <button type="submit" class="btn btn-primary">Sign In</button>
     </form>

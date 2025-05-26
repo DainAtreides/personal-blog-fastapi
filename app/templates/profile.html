@@ -7,16 +7,22 @@
     <div class="profile-container">
         <div class="profile-info">
             <h2>Profile</h2>
-            <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img">
+            <input type="checkbox" id="avatar-toggle" class="avatar-toggle" hidden>
+            <label for="avatar-toggle" class="avatar-label">
+                <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img">
+            </label>
+            <div class="avatar-modal">
+                <label for="avatar-toggle" class="avatar-modal-bg"></label>
+                <img src="{{ user.avatar_url }}" alt="Full Avatar" class="avatar-full-img">
+            </div>
             <p><strong>Username:</strong> {{ user.username }}</p>
             <p><strong>Gender:</strong> {{ user.gender.value }}</p>
             <p><strong>Email:</strong> {{ user.email }}</p>
             <p><strong>Role:</strong> {{ user.role }}</p>
-
+            <a href="/" class="btn btn-secondary">Back</a>
             {% if request.session.get("user_id") == user.user_id %}
             <a href="/users/me/edit-profile" class="btn btn-primary">Edit</a>
             {% endif %}
-            <a href="/" class="btn btn-secondary">Back</a>
         </div>
         <div class="profile-posts">
             <h2>User Posts</h2>

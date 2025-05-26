@@ -6,7 +6,7 @@
 <div class="content-container">
     <form method="GET" class="post-form">
         <h2>{{ post.title }}</h2>
-        <p><strong>Author:</strong> {{ post.user.username }}</p>
+        <p><strong>Author:</strong> <a href="/users/{{ post.user.user_id }}/show-profile">{{ post.user.username }}</a></p>
         <p><strong>Created:</strong> {{ post.created_at }}</p>
         <div class="post-body">
             {{ post.content | safe }}
@@ -16,7 +16,7 @@
             Back
         </a>
         {% if user_id == post.user_id %}
-        <a href="/posts/{{ post.post_id }}/edit-post" class="btn btn-secondary">Edit</a>
+        <a href="/posts/{{ post.post_id }}/edit-post" class="btn btn-primary">Edit</a>
         {% endif %}
     </form>
 </div>

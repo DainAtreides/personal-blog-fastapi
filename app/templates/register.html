@@ -4,12 +4,21 @@
 
 {% block content %}
 <div class="content-container">
-    <form method="POST" action="/users/register" enctype="multipart/form-data">
-        <label for="avatar">Avatar:</label>
-        <input type="file" id="avatar" name="avatar" accept="image/*"><br>
-
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br>
+    <form method="POST" action="/users/register" class="form-control" enctype="multipart/form-data">
+        <input type="checkbox" id="avatar-toggle" class="avatar-toggle" hidden>
+        <label for="avatar-toggle" class="avatar-label">
+            <img src="/static/avatars/default.png" alt="Avatar" class="avatar-img">
+        </label>
+        <div class="avatar-modal">
+            <label for="avatar-toggle" class="avatar-modal-bg"></label>
+            <img src="/static/avatars/default.png" alt="Full Avatar" class="avatar-full-img">
+        </div>
+        <br>
+        <input type="file" id="avatar_url" name="avatar_url" accept="image/*" class="avatar-upload">
+        <br>
+        <input type="text" name="username" autocomplete="off" style="position: absolute; left: -9999px; top: -9999px;" tabindex="-1" />
+        <label for="username">Name:</label><br>
+        <input type="text" id="username" name="username" autocomplete="nope" required><br>
 
         <label for="gender">Gender:</label><br>
         <select id="gender" name="gender" required>
@@ -19,7 +28,7 @@
         </select><br>
 
         <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email" required><br>
+        <input type="email" id="email" name="email" autocomplete="email" required><br>
 
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br>
@@ -30,4 +39,23 @@
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const avatarInput = document.getElementById("avatar_url");
+      const avatarPreview = document.querySelector(".avatar-label img");
+      const avatarModalImg = document.querySelector(".avatar-modal img");
+    
+      avatarInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+    
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          avatarPreview.src = e.target.result;
+          avatarModalImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+</script>    
 {% endblock %}

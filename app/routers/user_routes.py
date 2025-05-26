@@ -41,7 +41,12 @@ def handle_avatar_upload(avatar: Optional[UploadFile]) -> str:
     return f"/static/avatars/{filename}"
 
 
-async def process_user_form(username: str, gender: str, avatar_file: Optional[UploadFile], email: str) -> dict:
+async def process_user_form(
+        username: str,
+        gender: str,
+        avatar_file: Optional[UploadFile],
+        email: str,
+        password: Optional[str] = None) -> dict:
     gender_enum = validate_gender(gender)
     avatar_url = handle_avatar_upload(avatar_file)
     user_data = {
@@ -49,6 +54,8 @@ async def process_user_form(username: str, gender: str, avatar_file: Optional[Up
         "gender": gender_enum,
         "email": email
     }
+    if password is not None:
+        user_data["password"] = password
     if avatar_url is not None:
         user_data["avatar_url"] = avatar_url
     return user_data

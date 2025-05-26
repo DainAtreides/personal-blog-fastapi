@@ -160,11 +160,6 @@ main {
     background-color: #404040;
 }
 
-.post-form input[type=file] {
-    color: transparent;
-    width: 130px;
-}
-
 .button-row {
     display: flex;
     justify-content: flex-start;
@@ -210,7 +205,9 @@ main {
     color: #fff;
 }
 
+.post-body,
 .profile-post p {
+    text-align: justify;
     margin: 0;
 }
 
@@ -219,4 +216,54 @@ main {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.post-form .avatar-upload,
+.form-control .avatar-upload {
+    color: transparent;
+    width: 130px;
+}
+
+.avatar-toggle {
+    display: none;
+}
+
+
+.avatar-label {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.avatar-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.avatar-toggle:checked+.avatar-label+.avatar-modal {
+    display: flex;
+}
+
+.avatar-modal-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    cursor: pointer;
+}
+
+.avatar-full-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    border-radius: 10px;
+    z-index: 1001;
+    position: relative;
 }
