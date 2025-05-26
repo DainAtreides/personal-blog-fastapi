@@ -57,3 +57,22 @@ class PostRead(PostBase, FromORMBase):
     post_id: int
     created_at: datetime
     user: UserRead
+
+
+class CommentBase(BaseModel):
+    content: str
+
+
+class CommentCreate(CommentBase):
+    pass
+
+
+class CommentUpdate(BaseModel):
+    content: Optional[str] = None
+
+
+class CommentRead(CommentBase, FromORMBase):
+    comment_id: int
+    user: UserRead
+    post_id: PostRead
+    created_at: datetime

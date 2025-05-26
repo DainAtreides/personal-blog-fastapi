@@ -27,6 +27,8 @@ class User(Base):
 
     posts = relationship("Post", back_populates="user",
                          cascade="all, delete-orphan")
+    comments = relationship(
+        "Comment", back_populates="user", cascade="all, delete-orphan")
 
 
 class Post(Base):
@@ -40,3 +42,19 @@ class Post(Base):
     created_at = Column(DateTime, default=func.now(), nullable=False)
 
     user = relationship("User", back_populates="posts")
+    comments = relationship(
+        "Comment", back_populates="post", cascade="all, delete-orphan")
+
+
+class Comment(Base):
+    __tablename__ = "comments"
+    comment_id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, ForeignKey(
+        "post.post_id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey(
+        "user.user_id", ondelete="CASCADE"), nullable=False)
+    content = Column(String, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
+    user = relationship("User", back_populates="comments")
+    post = relationship("Post", back_populates="comments")
