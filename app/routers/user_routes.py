@@ -103,7 +103,7 @@ async def show_profile(user_id: int, request: Request, db: AsyncSession = Depend
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     posts = await read_posts(user_id=user.user_id, limit=100, offset=0, db=db)
-    return templates.TemplateResponse("profile.html", {"request": request, "user": user, "posts": posts})
+    return templates.TemplateResponse("users/profile.html", {"request": request, "user": user, "posts": posts})
 
 
 @user_router.get("/me/edit-profile", response_class=HTMLResponse)
@@ -114,7 +114,7 @@ async def edit_profile(request: Request, db: AsyncSession = Depends(get_db)):
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return templates.TemplateResponse("edit_profile.html", {"request": request, "user": user})
+    return templates.TemplateResponse("users/edit_profile.html", {"request": request, "user": user})
 
 
 @user_router.post("/me/edit-profile")
@@ -136,7 +136,7 @@ async def update_profile(
 
 @user_router.get("/me/delete-confirm")
 async def render_profile_delete(request: Request):
-    return templates.TemplateResponse("profile_delete.html", {"request": request})
+    return templates.TemplateResponse("users/profile_delete.html", {"request": request})
 
 
 @user_router.post("/me/edit-profile/delete", status_code=200)
@@ -154,7 +154,7 @@ async def change_password_page(request: Request):
     user_id = request.session.get("user_id")
     if not user_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    return templates.TemplateResponse("change_password.html", {"request": request})
+    return templates.TemplateResponse("users/change_password.html", {"request": request})
 
 
 @user_router.post("/me/change-password")
@@ -173,19 +173,19 @@ async def change_password(
         raise HTTPException(status_code=404, detail="User not found")
 
     if not verify_password(current_password, user.hashed_password):
-        return templates.TemplateResponse("change_password.html", {
+        return templates.TemplateResponse("users/change_password.html", {
             "request": request,
             "error": "Current password is incorrect"
         })
 
     if new_password != confirm_password:
-        return templates.TemplateResponse("change_password.html", {
+        return templates.TemplateResponse("users/change_password.html", {
             "request": request,
             "error": "New passwords do not match"
         })
 
     user.hashed_password = hash_password(new_password)
     await db.commit()
-    return templates.TemplateResponse("change_password.html", {
+    return templates.TemplateResponse("users/change_password.html", {
         "request": request,
         "success": "Password updated successfully"})

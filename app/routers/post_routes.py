@@ -83,7 +83,7 @@ async def read_post_detail(post_id: int, request: Request, db: AsyncSession = De
 
 @post_router.get("/{post_id}/delete")
 async def render_post_delete(post_id: int, request: Request):
-    return templates.TemplateResponse("post_delete.html", {
+    return templates.TemplateResponse("posts/post_delete.html", {
         "request": request,
         "post_id": post_id
     })
