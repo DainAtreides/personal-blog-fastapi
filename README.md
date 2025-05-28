@@ -1,1 +1,1 @@
-# Personal Blog (Fast API, SQLite, SQLAlchemy, Pydantic, Bootstrap) WIP
+# Personal Blog (Fast API, Jinja2, SQLite, SQLAlchemy, Pydantic, SASS) WIP
