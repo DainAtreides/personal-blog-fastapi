@@ -3,18 +3,16 @@
 {% block title %}Add Post{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" class="post-form" action="/posts">
-        <label for="title">Title:</label><br>
-        <input type="text" id="title" name="title" required><br>
 
-        <label for="content">Content:</label><br>
-        <textarea id="content" name="content" rows="10" cols="50" required></textarea><br>
-        
-        <div class="button-row">
-            <button type="submit" class="btn btn-primary">Add Post</button>
-            <a href="/" class="btn btn-secondary back">Back</a>
-        <div class="button-row">    
-    </form>
-</div>
+<form method="POST" action="/posts">
+    <label for="title">Title:</label><br>
+    <input type="text" id="title" name="title" required><br>
+
+    <label for="content">Content:</label><br>
+    <textarea id="content" name="content" rows="10" cols="50" required></textarea><br>
+
+    <button type="submit">Add Post</button>
+    <a href="/">Back</a>
+</form>
+
 {% endblock %}

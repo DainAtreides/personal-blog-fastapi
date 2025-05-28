@@ -5,31 +5,30 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/static/styles/style.css">
+  <link rel="stylesheet" href="">
   <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
   <header>
     <nav>
-      <div class="container">
-        <ul class="navbar">
-          <li><img src="/static/icons/header.png" width="64" height="64"></li>
-          <li><a href="/" class="btn btn-primary">Home</a></li>
-          {% if request.session.get("user_id") %}
-          {% set user_id = request.session.get("user_id") %}
-          <li><a href="/posts/add-post">Add Post</a></li>
-          <li><a href="/users/{{ user_id }}/show-profile">Profile</a></li>
-          <li>
-            <form action="/logout" method="POST">
-              <button type="submit" class="btn btn-secondary">Sign Out</button>
-            </form>
-          </li>
-          {% else %}
-          <li><a href="/login">Sign In</a></li>
-          <li><a href="/users/register" class="btn btn-secondary">Register</a></li>
-          {% endif %}
-        </ul>
+      <ul>
+        <li><img src="/static/icons/header.png" width="64" height="64"></li>
+        <li><a href="/">Home</a></li>
+        {% if request.session.get("user_id") %}
+        {% set user_id = request.session.get("user_id") %}
+        <li><a href="/posts/add-post">Add Post</a></li>
+        <li><a href="/users/{{ user_id }}/show-profile">Profile</a></li>
+        <li>
+          <form action="/logout" method="POST">
+            <button type="submit">Sign Out</button>
+          </form>
+        </li>
+        {% else %}
+        <li><a href="/login">Sign In</a></li>
+        <li><a href="/users/register">Register</a></li>
+        {% endif %}
+      </ul>
       </div>
     </nav>
   </header>
@@ -37,7 +36,6 @@
     {% block content %}
     {% endblock %}
   </main>
-
 </body>
 
 </html>

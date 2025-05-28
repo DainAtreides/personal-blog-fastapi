@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, Request, Form, HTTPException, status
 from fastapi.templating import Jinja2Templates
 from starlette.status import HTTP_303_SEE_OTHER
 from fastapi.responses import RedirectResponse
-from schemas import PostCreate, PostUpdate, CommentCreate
+from schemas import PostCreate, PostUpdate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 from crud.crud_post import create_post, update_post, get_post_by_id, delete_post
-from crud.crud_comment import create_comment, get_comments_by_post
+from crud.crud_comment import get_comments_by_post
 from auth import get_current_user
 from models import User
 
-post_router = APIRouter(prefix="/posts", tags=["Posts"])
+post_router = APIRouter(prefix="/posts")
 
 templates = Jinja2Templates(directory="templates")
 
@@ -79,20 +79,6 @@ async def read_post_detail(post_id: int, request: Request, db: AsyncSession = De
         "comments": comments,
         "user_id": request.session.get("user_id")
     })
-
-
-@post_router.post("/{post_id}/comments")
-async def add_comment(
-        post_id: int,
-        content: str = Form(...),
-        request: Request = None,
-        db: AsyncSession = Depends(get_db)):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Authentication required")
-    comment_create = CommentCreate(content=content)
-    await create_comment(post_id, user_id, comment_create, db)
-    return RedirectResponse(url=f"/posts/{post_id}", status_code=303)
 
 
 @post_router.get("/{post_id}/delete")

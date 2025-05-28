@@ -3,11 +3,9 @@
 {% block title %}Post Delete{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" class="post-form" action="/posts/{{ post_id }}/delete">
-        <h1>Are you sure you want to delete this post?</h1>
-        <button type="submit" class="btn btn-primary">Yes, delete</button>
-        <a href="/posts/{{ post_id }}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+<form method="POST" action="/posts/{{ post_id }}/delete">
+    <h1>Are you sure you want to delete this post?</h1>
+    <button type="submit">Yes, delete</button>
+    <a href="/posts/{{ post_id }}">Cancel</a>
+</form>
 {% endblock %}

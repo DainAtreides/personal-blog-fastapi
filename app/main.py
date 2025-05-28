@@ -9,6 +9,7 @@ from routers.post_routes import post_router
 from routers.user_routes import user_router
 from routers.auth_routes import auth_router
 from routers.admin_routes import admin_router
+from routers.comment_routes import comment_router
 from init_db import init_model
 from config import SECRET_KEY
 from starlette.middleware.sessions import SessionMiddleware
@@ -30,6 +31,7 @@ app.include_router(post_router)
 app.include_router(user_router)
 app.include_router(auth_router)
 app.include_router(admin_router)
+app.include_router(comment_router)
 
 
 @app.exception_handler(HTTPException)

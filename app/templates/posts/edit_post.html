@@ -3,8 +3,7 @@
 {% block title %}Edit Post{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" class="post-form" action="/posts/{{ post.post_id }}/edit-post">
+    <form method="POST" action="/posts/{{ post.post_id }}/edit-post">
 
         <label for="title">Title:</label><br>
         <input id="title" name="title" value="{{ post.title }}" required><br>
@@ -12,10 +11,7 @@
         <label for="content">Content:</label><br>
         <textarea id="content" name="content" rows="10" cols="50" required>{{ post.content }}</textarea><br>
         
-        <div class="button-row">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="/posts/{{ post.post_id }}/delete" class="btn btn-secondary">Delete</a>
-        </div>
+        <button type="submit">Save</button>
+        <a href="/posts/{{ post.post_id }}/delete">Delete</a>
     </form>
-</div>
 {% endblock %}

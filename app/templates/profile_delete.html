@@ -3,11 +3,9 @@
 {% block title %}Profile Delete{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" class="post-form" action="/users/me/edit-profile/delete">
-        <h1>Are you sure you want to delete your profile?</h1>
-        <button type="submit" class="btn btn-primary">Yes, delete</button>
-        <a href="/users/me/edit-profile" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+<form method="POST" action="/users/me/edit-profile/delete">
+    <h1>Are you sure you want to delete your profile?</h1>
+    <button type="submit">Yes, delete</button>
+    <a href="/users/me/edit-profile">Cancel</a>
+</form>
 {% endblock %}

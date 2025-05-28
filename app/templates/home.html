@@ -3,23 +3,22 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    {% if posts %}
-        <ul class="list-wrapper">
-        {% for post in posts %}
-            <li class="post-item">
-                <h2><a href="/posts/{{ post.post_id }}">{{ post.title }}</a> 
-                    <small>
-                        by <a href="/users/{{ post.user.user_id }}/show-profile">{{ post.user.username }}</a><br>
-                    </small>
-                </h2>
-                <p class="post-body">{{ post.content[:200] }}</p>
-                <p>at {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No posts found.</p>
-    {% endif %}
+{% if posts %}
+<ul>
+    {% for post in posts %}
+    <li>
+        <h2><a href="/posts/{{ post.post_id }}">{{ post.title }}</a>
+            <small>
+                by <a href="/users/{{ post.user.user_id }}/show-profile">{{ post.user.username }}</a><br>
+            </small>
+        </h2>
+        <p>{{ post.content[:200] }}</p>
+        <p>at {{ post.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No posts found.</p>
+{% endif %}
 </div>
 {% endblock %}

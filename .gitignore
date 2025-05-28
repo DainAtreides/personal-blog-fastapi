@@ -13,3 +13,5 @@ tests/
 pytest.ini
 test.txt
 create_admin.py
+js
+styles

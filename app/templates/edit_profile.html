@@ -3,40 +3,30 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" class="post-form" action="/users/me/edit-profile" enctype="multipart/form-data">
-        <input type="checkbox" id="avatar-toggle" class="avatar-toggle" hidden>
-        <label for="avatar-toggle" class="avatar-label">
-            <img src="{{ user.avatar_url }}" alt="Avatar" class="avatar-img">
-        </label>
-        <div class="avatar-modal">
-            <label for="avatar-toggle" class="avatar-modal-bg"></label>
-            <img src="{{ user.avatar_url }}" alt="Full Avatar" class="avatar-full-img">
-        </div>
-        <br>
-        <input type="file" id="avatar_url" name="avatar_url" accept="image/*" class="avatar-upload">
-        <br>
-        <label for="username">Name:</label>
-        <input type="text" id="username" name="username" value="{{ user.username }}" required><br>
-
-        <label for="gender">Gender:</label><br>
-        <select id="gender" name="gender" required>
-            <option value="" disabled {% if not user.gender %}selected{% endif %}>Select your gender</option>
-            <option value="male" {% if user.gender == 'male' %}selected{% endif %}>Male</option>
-            <option value="female" {% if user.gender == 'female' %}selected{% endif %}>Female</option>
-        </select><br>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="{{ user.email }}" required><br>
-
-        <label for="password">Password:</label><br> 
-        <a id="password" name="password" href="/users/me/change-password" class="btn btn-secondary">Change</a>
-        
-        <div class="button-row">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="/users/{{ user.user_id }}/show-profile" class="btn btn-secondary">Back</a>
-            <a href="/users/me/delete-confirm" class="btn btn-secondary">Delete</a>
-        </div>
-    </form>
-</div>
+<form method="POST" action="/users/me/edit-profile" enctype="multipart/form-data">
+    <input type="checkbox" id="avatar-toggle" hidden>
+    <label for="avatar-toggle">
+        <img src="{{ user.avatar_url }}" alt="Avatar">
+    </label>
+    <label for="avatar-toggle"></label>
+    <img src="{{ user.avatar_url }}" alt="Full Avatar">
+    <br>
+    <input type="file" id="avatar_url" name="avatar_url" accept="image/*">
+    <br>
+    <label for="username">Name:</label>
+    <input type="text" id="username" name="username" value="{{ user.username }}" required><br>
+    <label for="gender">Gender:</label><br>
+    <select id="gender" name="gender" required>
+        <option value="" disabled {% if not user.gender %}selected{% endif %}>Select your gender</option>
+        <option value="male" {% if user.gender=='male' %}selected{% endif %}>Male</option>
+        <option value="female" {% if user.gender=='female' %}selected{% endif %}>Female</option>
+    </select><br>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" value="{{ user.email }}" required><br>
+    <label for="password">Password:</label><br>
+    <a id="password" name="password" href="/users/me/change-password">Change</a>
+    <button type="submit">Save</button>
+    <a href="/users/{{ user.user_id }}/show-profile">Back</a>
+    <a href="/users/me/delete-confirm">Delete</a>
+</form>
 {% endblock %}

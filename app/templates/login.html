@@ -3,19 +3,13 @@
 {% block title %}Sign In{% endblock %}
 
 {% block content %}
-<div class="content-container">
-    <form method="POST" action="/login" class="form-control">
-        <label for="login">Login:</label><br>
-        <input type="text" id="identifier" name="identifier" placeholder="Email or Username" required>
-        <br>
-
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" placeholder="Enter your password here" required><br>
-        
-        <div class="button-row">
-            <a href="/" class="btn btn-secondary">Back</a> 
-            <button type="submit" class="btn btn-primary">Sign In</button>
-        </div>
-    </form>
-</div>
+<form method="POST" action="/login">
+    <label for="login">Login:</label><br>
+    <input type="text" id="identifier" name="identifier" placeholder="Email or Username" required>
+    <br>
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" placeholder="Enter your password here" required><br>
+    <a href="/">Back</a>
+    <button type="submit">Sign In</button>
+</form>
 {% endblock %}
