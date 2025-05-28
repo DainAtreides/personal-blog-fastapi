@@ -19,5 +19,29 @@
         <a href="/posts/{{ post.post_id }}/edit-post" class="btn btn-primary">Edit</a>
         {% endif %}
     </form>
+    {% if user_id %}
+    <section id="add-comment">
+        <h3>Add a comment</h3>
+        <form method="POST" action="/posts/{{ post.post_id }}/comments" class="post-form">
+            <textarea name="content" required rows="3" placeholder="Write your comment here..."></textarea><br>
+            <button type="submit" class="btn btn-primary">Comment</button>
+        </form>
+    </section>
+    {% else %}
+    <p><a href="/login">Log in</a> to post comments.</p>
+    {% endif %}
+    <section id="comments-section">
+        <h3>Comments</h3>
+        {% if comments %}
+            {% for comment in comments %}
+                <div class="comment">
+                    <p><strong>{{ comment.user.username }}</strong> at {{ comment.created_at.strftime("%Y-%m-%d %H:%M") }}</p>
+                    <p>{{ comment.content }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No comments yet.</p>
+        {% endif %}
+    </section>
 </div>
 {% endblock %}

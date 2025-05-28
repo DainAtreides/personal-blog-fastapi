@@ -12,8 +12,10 @@
         <label for="content">Content:</label><br>
         <textarea id="content" name="content" rows="10" cols="50" required>{{ post.content }}</textarea><br>
         
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/posts/{{ post.post_id }}" class="btn btn-secondary">Back</a>
+        <div class="button-row">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="/posts/{{ post.post_id }}/delete" class="btn btn-secondary">Delete</a>
+        </div>
     </form>
 </div>
 {% endblock %}

@@ -73,6 +73,6 @@ class CommentUpdate(BaseModel):
 
 class CommentRead(CommentBase, FromORMBase):
     comment_id: int
+    post_id: int
     user: UserRead
-    post_id: PostRead
     created_at: datetime

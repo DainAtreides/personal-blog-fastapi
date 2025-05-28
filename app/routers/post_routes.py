@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, Request, Form, HTTPException
+from fastapi import APIRouter, Depends, Request, Form, HTTPException, status
 from fastapi.templating import Jinja2Templates
 from starlette.status import HTTP_303_SEE_OTHER
 from fastapi.responses import RedirectResponse
-from schemas import PostCreate, PostUpdate
+from schemas import PostCreate, PostUpdate, CommentCreate
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
-from crud.crud_post import create_post, update_post, get_post_by_id
+from crud.crud_post import create_post, update_post, get_post_by_id, delete_post
+from crud.crud_comment import create_comment, get_comments_by_post
 from auth import get_current_user
 from models import User
 
@@ -36,18 +37,6 @@ async def add_post(
     return RedirectResponse(url="/", status_code=HTTP_303_SEE_OTHER)
 
 
-@post_router.get("/{post_id}")
-async def view_post(
-        post_id: int,
-        request: Request,
-        db: AsyncSession = Depends(get_db)):
-    post = await get_post_by_id(post_id, db)
-    user_id = request.session.get("user_id")
-    return templates.TemplateResponse(
-        "posts/post_detail.html",
-        {"request": request, "post": post, "user_id": user_id})
-
-
 @post_router.get("/{post_id}/edit-post")
 async def edit_post_form(
         post_id: int,
@@ -76,3 +65,57 @@ async def edit_post_submit(
     post_update = PostUpdate(title=title, content=content)
     await update_post(post_id, post_update, db)
     return RedirectResponse(url=f"/posts/{post_id}", status_code=HTTP_303_SEE_OTHER)
+
+
+@post_router.get("/{post_id}")
+async def read_post_detail(post_id: int, request: Request, db: AsyncSession = Depends(get_db)):
+    post = await get_post_by_id(post_id, db)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    comments = await get_comments_by_post(post_id, db)
+    return templates.TemplateResponse("posts/post_detail.html", {
+        "request": request,
+        "post": post,
+        "comments": comments,
+        "user_id": request.session.get("user_id")
+    })
+
+
+@post_router.post("/{post_id}/comments")
+async def add_comment(
+        post_id: int,
+        content: str = Form(...),
+        request: Request = None,
+        db: AsyncSession = Depends(get_db)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentication required")
+    comment_create = CommentCreate(content=content)
+    await create_comment(post_id, user_id, comment_create, db)
+    return RedirectResponse(url=f"/posts/{post_id}", status_code=303)
+
+
+@post_router.get("/{post_id}/delete")
+async def render_post_delete(post_id: int, request: Request):
+    return templates.TemplateResponse("post_delete.html", {
+        "request": request,
+        "post_id": post_id
+    })
+
+
+@post_router.post("/{post_id}/delete")
+async def confirm_post_delete(
+        post_id: int,
+        request: Request,
+        db: AsyncSession = Depends(get_db)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentication required")
+    post = await get_post_by_id(post_id, db)
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if post.user_id != user_id:
+        raise HTTPException(
+            status_code=403, detail="Not authorized to delete this post")
+    await delete_post(post_id, db)
+    return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)

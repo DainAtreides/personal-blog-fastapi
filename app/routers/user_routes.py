@@ -135,12 +135,12 @@ async def update_profile(
 
 
 @user_router.get("/me/delete-confirm")
-async def confirm_delete_page(request: Request):
-    return templates.TemplateResponse("confirm_delete.html", {"request": request})
+async def render_profile_delete(request: Request):
+    return templates.TemplateResponse("profile_delete.html", {"request": request})
 
 
 @user_router.post("/me/edit-profile/delete", status_code=200)
-async def delete_profile(request: Request, db: AsyncSession = Depends(get_db)):
+async def confirm_profile_delete(request: Request, db: AsyncSession = Depends(get_db)):
     user_id = request.session.get("user_id")
     if not user_id:
         raise HTTPException(status_code=401, detail="Not authenticated")
